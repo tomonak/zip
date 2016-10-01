@@ -76,7 +76,8 @@ Reader.prototype.readInteger = function (length, bigEndian) {
 }
 
 Reader.prototype.readString = function (length, charset) {
-    return bops.to(this.read(length), charset || "utf8");
+    // return bops.to(this.read(length), charset || "utf8");
+    return this.read(length);
 }
 
 Reader.prototype.readUncompressed = function (length, method) {
