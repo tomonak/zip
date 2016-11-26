@@ -254,6 +254,10 @@ Reader.prototype.locateEndOfCentralDirectoryRecord = function () {
         var possibleFileCommentLength = this.readInteger(2);
         if (position + 22 + possibleFileCommentLength === length)
             break;
+        if (position + 22 + possibleFileCommentLength < length) {
+            this.offsetOfFileEnd = length - (position + 22 + possibleFileCommentLength);
+            break;
+        }
     }
 
     this.seek(position);
@@ -316,6 +320,10 @@ Reader.prototype.iterator = function () {
     // find the end record and read it
     stream.locateEndOfCentralDirectoryRecord();
     var endRecord = stream.readEndOfCentralDirectoryRecord();
+
+    if (this.offsetOfFileEnd != null) {
+        endRecord.central_dir_offset -= this.offsetOfFileEnd;
+    }
 
     // seek to the beginning of the central directory
     stream.seek(endRecord.central_dir_offset);
